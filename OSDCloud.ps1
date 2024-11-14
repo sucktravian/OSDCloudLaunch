@@ -8,6 +8,11 @@ Install-Module OSD -Force
 Write-Host  -ForegroundColor Cyan "Importing OSD PowerShell Module"
 Import-Module OSD -Force
 
+$Global:MyOSDCloud = [ordered]@{
+    OSImageIndex = '6'
+}
+
+Write-Output $Global:MyOSDCloud
 
 #Start OSDCloud ZTI change os when neeeded
 Write-Host  -ForegroundColor Cyan "Start OSDCloud custom parameters"
