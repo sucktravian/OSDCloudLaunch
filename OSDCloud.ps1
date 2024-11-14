@@ -16,7 +16,7 @@ Import-Module OSD -Force
 
 
 #Start OSDCloud ZTI change os when neeeded
-Write-Host  -ForegroundColor Cyan "Start OSDCloud with MY Parameters"
+Write-Host  -ForegroundColor Cyan "Start OSDCloud custom parameters"
 Start-OSDCloud -OSName 'Windows 11 23H2 x64' -OSEdition Pro -OSLanguage ja-jp -OSActivation Retail -SkipAutopilot -ZTI
 
 Write-Host  -ForegroundColor Cyan "Starting OSDCloud PostAction ..."
