@@ -14,12 +14,84 @@ $Global:MyOSDCloud = [ordered]@{
 
 Write-Output $Global:MyOSDCloud
 
-#Start OSDCloud ZTI change os when neeeded
+$OSParams = @{
+    OSVersion = "Windows 11"
+    OSBuild = "23H2"
+    OSEdition = "Pro"
+    OSLanguage = "ja-jp"
+    OSLicense = "Retail"
+    ZTI = $true
+    SkipAutopilot = $true
+    Firmware = $false
+}
+
 Write-Host  -ForegroundColor Cyan "Start OSDCloud custom parameters"
-Start-OSDCloud -OSName 'Windows 11 23H2 x64' -OSEdition Pro -OSLanguage ja-jp -OSActivation Retail -SkipAutopilot -ZTI
+Start-OSDCloud $OSParams
+
+$OOBEDeployJson = @'
+{
+    "AddNetFX3":  {
+                      "IsPresent":  true
+                  },
+    "Autopilot":  {
+                      "IsPresent":  false
+                  },
+    "RemoveAppx":  [
+                    "Microsoft.Microsoft3DViewer",
+                    "Microsoft.BingSearch",
+                    "Clipchamp.Clipchamp",
+                    "Microsoft.Windows.DevHome",
+                    "MicrosoftCorporationII.MicrosoftFamily",
+                    "Microsoft.MixedReality.Portal",
+                    "Microsoft.Office.OneNote",
+                    "Microsoft.OutlookForWindows",
+                    "MicrosoftTeams",
+                    "MSTeams",
+                    
+                    "MicrosoftCorporationII.QuickAssist",
+                    "Microsoft.SkypeApp",
+                    "Microsoft.BingWeather",
+                    "Microsoft.BingNews",
+                    "Microsoft.GamingApp",
+                    "Microsoft.GetHelp",
+                    "Microsoft.Getstarted",
+                    "Microsoft.Messaging",
+                    "Microsoft.MicrosoftOfficeHub",
+                    "Microsoft.MicrosoftSolitaireCollection",
+                    "Microsoft.People",
+                    "Microsoft.PowerAutomateDesktop",
+                    "Microsoft.StorePurchaseApp",
+                    "Microsoft.Todos",
+                    "Microsoft.Wallet",
+                    "Microsoft.XboxApp",
+                    "microsoft.windowscommunicationsapps",
+                    "Microsoft.WindowsFeedbackHub",
+                    "Microsoft.WindowsMaps",
+                    "Microsoft.WindowsSoundRecorder",
+                    "Microsoft.Xbox.TCUI",
+                    "Microsoft.XboxGameOverlay",
+                    "Microsoft.XboxGamingOverlay",
+                    "Microsoft.XboxIdentityProvider",
+                    "Microsoft.XboxSpeechToTextOverlay",
+                    "Microsoft.YourPhone",
+                    "Microsoft.ZuneMusic",
+                    "Microsoft.ZuneVideo"
+                   ],
+    "UpdateDrivers":  {
+                          "IsPresent":  true
+                      },
+    "UpdateWindows":  {
+                          "IsPresent":  true
+                      }
+}
+'@
+If (!(Test-Path "C:\ProgramData\OSDeploy")) {
+    New-Item "C:\ProgramData\OSDeploy" -ItemType Directory -Force | Out-Null
+}
+$OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeploy.json" -Encoding ascii -Force
+
 
 Write-Host  -ForegroundColor Cyan "Downloading unattend.xml from repository"
-
 # Raw url
 $unattendURL = "https://raw.githubusercontent.com/sucktravian/OSDCloudLaunch/main/unattend.xml"
 
