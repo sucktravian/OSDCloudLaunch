@@ -24,16 +24,30 @@ Write-Host  -ForegroundColor Cyan "Downloading unattend.xml from repository"
 $unattendURL = "https://raw.githubusercontent.com/sucktravian/OSDCloudLaunch/main/unattend.xml"
 
 # Path to the Sysprep folder
-$unattendPath = "X:\Windows\System32\Sysprep\unattend.xml"
+$unattendPath = "C:\Windows\System32\Sysprep\unattend.xml"
 
-# Download the unattend.xml file from repository
-Invoke-WebRequest -Uri $unattendURL -OutFile $unattendPath
-
-# Verify if the download was successful
-if (Test-Path $unattendPath) {
-    Write-Host  -ForegroundColor Green "Unattend.xml downloaded successfully to $unattendPath"
+# Check if the Sysprep folder exists
+if (Test-Path "C:\Windows\System32\Sysprep") {
+    Write-Host  -ForegroundColor Green "Sysprep folder found at X:\Windows\System32\Sysprep"
 } else {
-    Write-Host  -ForegroundColor Red "Failed to download unattend.xml"
+    Write-Host  -ForegroundColor Red "Sysprep folder not found. Please check if the path is correct."
+    exit
+}
+
+# Attempt to download the unattend.xml file
+try {
+    Invoke-WebRequest -Uri $unattendURL -OutFile $unattendPath
+    Write-Host  -ForegroundColor Green "Unattend.xml downloaded successfully to $unattendPath"
+} catch {
+    Write-Host  -ForegroundColor Red "Failed to download unattend.xml from $unattendURL. Error: $_"
+    exit
+}
+
+# Verify if the file was copied to the Sysprep folder
+if (Test-Path $unattendPath) {
+    Write-Host  -ForegroundColor Green "Unattend.xml is present in the Sysprep folder."
+} else {
+    Write-Host  -ForegroundColor Red "Unattend.xml was not found in the Sysprep folder."
 }
 
 #Restart from WinPE
