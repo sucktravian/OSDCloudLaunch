@@ -48,55 +48,35 @@
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
 					<Order>11</Order>
-					<Path>powershell.exe -NoProfile -Command "$xml = [xml]::new(); $xml.Load('C:\Windows\Panther\unattend.xml'); $sb = [scriptblock]::Create( $xml.unattend.Extensions.ExtractScript ); Invoke-Command -ScriptBlock $sb -ArgumentList $xml;"</Path>
-				</RunSynchronousCommand>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>12</Order>
-					<Path>powershell.exe -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Temp\remove-packages.ps1' -Raw | Invoke-Expression;"</Path>
-				</RunSynchronousCommand>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>13</Order>
-					<Path>powershell.exe -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Temp\remove-caps.ps1' -Raw | Invoke-Expression;"</Path>
-				</RunSynchronousCommand>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>14</Order>
-					<Path>powershell.exe -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Temp\remove-features.ps1' -Raw | Invoke-Expression;"</Path>
-				</RunSynchronousCommand>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>15</Order>
 					<Path>net.exe accounts /maxpwage:UNLIMITED</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>16</Order>
+					<Order>12</Order>
 					<Path>reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v HiberbootEnabled /t REG_DWORD /d 0 /f</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>17</Order>
+					<Order>13</Order>
 					<Path>reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Dsh" /v AllowNewsAndInterests /t REG_DWORD /d 0 /f</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>18</Order>
+					<Order>14</Order>
 					<Path>reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\BitLocker" /v "PreventDeviceEncryption" /t REG_DWORD /d 1 /f</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>19</Order>
+					<Order>15</Order>
 					<Path>reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v HideFirstRunExperience /t REG_DWORD /d 1 /f</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>20</Order>
+					<Order>16</Order>
 					<Path>reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>21</Order>
+					<Order>17</Order>
 					<Path>reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\RunOnce" /v "SearchboxTaskbarMode" /t REG_SZ /d "reg.exe add HKCU\Software\Microsoft\Windows\CurrentVersion\Search /v SearchboxTaskbarMode /t REG_DWORD /d 2 /f" /f</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>22</Order>
+					<Order>18</Order>
 					<Path>reg.exe unload "HKU\DefaultUser"</Path>
-				</RunSynchronousCommand>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>23</Order>
-					<Path>powershell.exe -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\SetStartPins.ps1' -Raw | Invoke-Expression;"</Path>
 				</RunSynchronousCommand>
 			</RunSynchronous>
 		</component>
@@ -144,200 +124,4 @@
 			</FirstLogonCommands>
 		</component>
 	</settings>
-	<Extensions xmlns="https://schneegans.de/windows/unattend-generator/">
-		<ExtractScript>
-param(
-    [xml] $Document
-);
-
-$scriptsDir = 'C:\Windows\Setup\Scripts\';
-foreach( $file in $Document.unattend.Extensions.File ) {
-    $path = [System.Environment]::ExpandEnvironmentVariables(
-        $file.GetAttribute( 'path' )
-    );
-    if( $path.StartsWith( $scriptsDir ) ) {
-        mkdir -Path $scriptsDir -ErrorAction 'SilentlyContinue';
-    }
-    $encoding = switch( [System.IO.Path]::GetExtension( $path ) ) {
-        { $_ -in '.ps1', '.xml' } { [System.Text.Encoding]::UTF8; }
-        { $_ -in '.reg', '.vbs', '.js' } { [System.Text.UnicodeEncoding]::new( $false, $true ); }
-        default { [System.Text.Encoding]::Default; }
-    };
-    [System.IO.File]::WriteAllBytes( $path, ( $encoding.GetPreamble() + $encoding.GetBytes( $file.InnerText.Trim() ) ) );
-}
-		</ExtractScript>
-		<File path="C:\Windows\Temp\remove-packages.ps1">
-$selectors = @(
-        'MicrosoftWindows.Client.WebExperience';
-        'Microsoft.ZuneMusic';
-	'Microsoft.Microsoft3DViewer';
-	'Microsoft.BingSearch';
-	'Clipchamp.Clipchamp';
-	'Microsoft.549981C3F5F10';
-	'Microsoft.Windows.DevHome';
-	'MicrosoftCorporationII.MicrosoftFamily';
-	'Microsoft.WindowsFeedbackHub';
-	'Microsoft.GetHelp';
-	'Microsoft.Getstarted';
-	'microsoft.windowscommunicationsapps';
-	'Microsoft.WindowsMaps';
-	'Microsoft.MixedReality.Portal';
-	'Microsoft.BingNews';
-	'Microsoft.MicrosoftOfficeHub';
-	'Microsoft.Office.OneNote';
-	'Microsoft.OutlookForWindows';
-	'Microsoft.People';
-	'Microsoft.PowerAutomateDesktop';
-	'MicrosoftCorporationII.QuickAssist';
-	'Microsoft.SkypeApp';
-	'Microsoft.MicrosoftSolitaireCollection';
-	'MicrosoftTeams';
-	'MSTeams';
-	'Microsoft.Todos';
-	'Microsoft.WindowsSoundRecorder';
-	'Microsoft.Wallet';
-	'Microsoft.BingWeather';
-	'Microsoft.Xbox.TCUI';
-	'Microsoft.XboxApp';
-	'Microsoft.XboxGameOverlay';
-	'Microsoft.XboxGamingOverlay';
-	'Microsoft.XboxIdentityProvider';
-	'Microsoft.XboxSpeechToTextOverlay';
-	'Microsoft.GamingApp';
-	'Microsoft.YourPhone';
-	'Microsoft.ZuneVideo';
-);
-$getCommand = { Get-AppxProvisionedPackage -Online; };
-$filterCommand = { $_.DisplayName -eq $selector; };
-$removeCommand = {
-  [CmdletBinding()]
-  param(
-    [Parameter( Mandatory, ValueFromPipeline )]
-    $InputObject
-  );
-  process {
-    $InputObject | Remove-AppxProvisionedPackage -AllUsers -Online -ErrorAction 'Continue';
-  }
-};
-$type = 'Package';
-$logfile = 'C:\Windows\Temp\remove-packages.log';
-&amp; {
-	$installed = &amp; $getCommand;
-	foreach( $selector in $selectors ) {
-		$result = [ordered] @{
-			Selector = $selector;
-		};
-		$found = $installed | Where-Object -FilterScript $filterCommand;
-		if( $found ) {
-			$result.Output = $found | &amp; $removeCommand;
-			if( $? ) {
-				$result.Message = "$type removed.";
-			} else {
-				$result.Message = "$type not removed.";
-				$result.Error = $Error[0];
-			}
-		} else {
-			$result.Message = "$type not installed.";
-		}
-		$result | ConvertTo-Json -Depth 3 -Compress;
-	}
-} *&gt;&amp;1 &gt;&gt; $logfile;
-		</File>
-		<File path="C:\Windows\Temp\remove-caps.ps1">
-$selectors = @(
-	'Browser.InternetExplorer';
-	'MathRecognizer';
-	'OpenSSH.Client';
-	'App.Support.QuickAssist';
-	'App.StepsRecorder';
-	'Media.WindowsMediaPlayer';
-	'Microsoft.Windows.WordPad';
-);
-$getCommand = { Get-WindowsCapability -Online; };
-$filterCommand = { ($_.Name -split '~')[0] -eq $selector; };
-$removeCommand = {
-  [CmdletBinding()]
-  param(
-    [Parameter( Mandatory, ValueFromPipeline )]
-    $InputObject
-  );
-  process {
-    $InputObject | Remove-WindowsCapability -Online -ErrorAction 'Continue';
-  }
-};
-$type = 'Capability';
-$logfile = 'C:\Windows\Temp\remove-caps.log';
-&amp; {
-	$installed = &amp; $getCommand;
-	foreach( $selector in $selectors ) {
-		$result = [ordered] @{
-			Selector = $selector;
-		};
-		$found = $installed | Where-Object -FilterScript $filterCommand;
-		if( $found ) {
-			$result.Output = $found | &amp; $removeCommand;
-			if( $? ) {
-				$result.Message = "$type removed.";
-			} else {
-				$result.Message = "$type not removed.";
-				$result.Error = $Error[0];
-			}
-		} else {
-			$result.Message = "$type not installed.";
-		}
-		$result | ConvertTo-Json -Depth 3 -Compress;
-	}
-} *&gt;&amp;1 &gt;&gt; $logfile;
-		</File>
-		<File path="C:\Windows\Temp\remove-features.ps1">
-$selectors = @(
-	'Microsoft-RemoteDesktopConnection';
-	'Recall';
-);
-$getCommand = { Get-WindowsOptionalFeature -Online; };
-$filterCommand = { $_.FeatureName -eq $selector; };
-$removeCommand = {
-  [CmdletBinding()]
-  param(
-    [Parameter( Mandatory, ValueFromPipeline )]
-    $InputObject
-  );
-  process {
-    $InputObject | Disable-WindowsOptionalFeature -Online -Remove -NoRestart -ErrorAction 'Continue';
-  }
-};
-$type = 'Feature';
-$logfile = 'C:\Windows\Temp\remove-features.log';
-&amp; {
-	$installed = &amp; $getCommand;
-	foreach( $selector in $selectors ) {
-		$result = [ordered] @{
-			Selector = $selector;
-		};
-		$found = $installed | Where-Object -FilterScript $filterCommand;
-		if( $found ) {
-			$result.Output = $found | &amp; $removeCommand;
-			if( $? ) {
-				$result.Message = "$type removed.";
-			} else {
-				$result.Message = "$type not removed.";
-				$result.Error = $Error[0];
-			}
-		} else {
-			$result.Message = "$type not installed.";
-		}
-		$result | ConvertTo-Json -Depth 3 -Compress;
-	}
-} *&gt;&amp;1 &gt;&gt; $logfile;
-		</File>
-		<File path="C:\Windows\Setup\Scripts\SetStartPins.ps1">
-$json = '{"pinnedList":[{"packagedAppId":"windows.immersivecontrolpanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel"},{"desktopAppLink":"%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\System Tools\\Control Panel.lnk"},{"desktopAppLink":"%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\File Explorer.lnk"},{"packagedAppId":"Microsoft.WindowsNotepad_8wekyb3d8bbwe!App"}]}';
-if( [System.Environment]::OSVersion.Version.Build -lt 20000 ) {
-	return;
-}
-$key = 'Registry::HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Start';
-New-Item -Path $key -ItemType 'Directory' -ErrorAction 'SilentlyContinue';
-Set-ItemProperty -LiteralPath $key -Name 'ConfigureStartPins' -Value $json -Type 'String';
-		</File>
-	</Extensions>
 </unattend>
