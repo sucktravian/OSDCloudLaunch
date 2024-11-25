@@ -15,8 +15,7 @@ $Global:MyOSDCloud = [ordered]@{
 Write-Output $Global:MyOSDCloud
 
 $OSParams = @{
-    OSVersion = "Windows 11"
-    OSBuild = "23H2"
+    OSName = "Windows 11 23H2 x64"
     OSEdition = "Pro"
     OSLanguage = "ja-jp"
     OSLicense = "Retail"
