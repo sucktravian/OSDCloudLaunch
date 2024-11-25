@@ -15,18 +15,8 @@ $Global:MyOSDCloud = [ordered]@{
 
 Write-Output $Global:MyOSDCloud
 
-$OSParams = @{
-    OSName = "Windows 11 23H2 x64"
-    OSEdition = "Pro"
-    OSLanguage = "ja-jp"
-    OSActivation = "Retail"
-    ZTI = $true
-    SkipAutopilot = $true
-    Firmware = $false
-}
-
 Write-Host  -ForegroundColor Cyan "Start OSDCloud custom parameters"
-Start-OSDCloud $OSParams
+Start-OSDCloud -OSName 'Windows 11 23H2 x64' -SkipAutopilot $true -Firmware $false -ZTI $true -OSEdition Pro -OSLanguage ja-jp -OSActivation Retail
 
 $OOBEDeployJson = @'
 {
