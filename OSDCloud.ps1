@@ -2,6 +2,7 @@ Write-Host  -ForegroundColor Cyan "Starting Custom OSDCloud ..."
 Start-Sleep -Seconds 5
 pause
 #Make sure I have the latest OSD Content
+# Start-OSDCloud -OSName 'Windows 11 23H2 x64' -SkipAutopilot $true -Firmware $false -ZTI $true -OSEdition Pro -OSLanguage ja-jp -OSActivation Retail
 Write-Host  -ForegroundColor Cyan "Updating OSD PowerShell Module"
 Install-Module OSD -Force -SkipPublisherCheck
 
