@@ -1,59 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
-	<!--https://schneegans.de/windows/unattend-generator/?LanguageMode=Unattended&UILanguage=ja-JP&Locale=ja-JP&Keyboard=00000411&GeoLocation=122&ProcessorArchitecture=amd64&BypassRequirementsCheck=true&BypassNetworkCheck=true&ComputerNameMode=Random&CompactOsMode=Never&TimeZoneMode=Explicit&TimeZone=Tokyo+Standard+Time&PartitionMode=Custom&DiskpartScript=select+disk+0%0D%0Aclean%0D%0Acreate+partition+primary+size%3D300%0D%0Aformat+fs%3Dntfs+label%3D%22WINRE%22+quick%0D%0Aset+id%3DDE94BBA4-06D1-4D40-A16A-BFD50179D6AC%0D%0Acreate+partition+efi+size%3D100%0D%0Aformat+fs%3Dfat32+label%3D%22System%22+quick%0D%0Acreate+partition+msr+size%3D128%0D%0Acreate+partition+primary+size%3D102400%0D%0Aformat+fs%3Dntfs+label%3D%22OS%22+quick%0D%0Aassign+letter%3DC%0D%0A&InstallToMode=Available&WindowsEditionMode=Interactive&UserAccountMode=Unattended&AccountName0=&AccountName1=&AccountName2=&AccountName3=&AccountName4=&AutoLogonMode=Builtin&BuiltinAdministratorPassword=&PasswordExpirationMode=Unlimited&LockoutMode=Default&HideFiles=Hidden&TaskbarSearch=Box&DisableWidgets=true&DisableFastStartup=true&PreventDeviceEncryption=true&HideEdgeFre=true&WifiMode=Skip&ExpressSettings=DisableAll&KeysMode=Skip&ColorMode=Default&WallpaperMode=Default&Remove3DViewer=true&RemoveBingSearch=true&RemoveClipchamp=true&RemoveCortana=true&RemoveDevHome=true&RemoveFamily=true&RemoveFeedbackHub=true&RemoveGetHelp=true&RemoveInternetExplorer=true&RemoveMailCalendar=true&RemoveMaps=true&RemoveMathInputPanel=true&RemoveMixedReality=true&RemoveZuneVideo=true&RemoveNews=true&RemoveOffice365=true&RemoveOneDrive=true&RemoveOneNote=true&RemoveOpenSSHClient=true&RemoveOutlook=true&RemovePeople=true&RemovePowerAutomate=true&RemoveQuickAssist=true&RemoveRecall=true&RemoveRdpClient=true&RemoveSkype=true&RemoveSolitaire=true&RemoveStepsRecorder=true&RemoveTeams=true&RemoveGetStarted=true&RemoveToDo=true&RemoveVoiceRecorder=true&RemoveWallet=true&RemoveWeather=true&RemoveWindowsMediaPlayer=true&RemoveWordPad=true&RemoveXboxApps=true&RemoveYourPhone=true&StartTilesMode=Default&StartPinsMode=Custom&StartPinsJson=%7B%22pinnedList%22%3A%5B%7B%22packagedAppId%22%3A%22windows.immersivecontrolpanel_cw5n1h2txyewy%21microsoft.windows.immersivecontrolpanel%22%7D%2C%7B%22desktopAppLink%22%3A%22%25APPDATA%25%5C%5CMicrosoft%5C%5CWindows%5C%5CStart+Menu%5C%5CPrograms%5C%5CSystem+Tools%5C%5CControl+Panel.lnk%22%7D%2C%7B%22desktopAppLink%22%3A%22%25APPDATA%25%5C%5CMicrosoft%5C%5CWindows%5C%5CStart+Menu%5C%5CPrograms%5C%5CFile+Explorer.lnk%22%7D%2C%7B%22packagedAppId%22%3A%22Microsoft.WindowsNotepad_8wekyb3d8bbwe%21App%22%7D%5D%7D&WdacMode=Skip&NotFilename=true-->
 	<settings pass="offlineServicing"></settings>
-	<settings pass="windowsPE">
-		<component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
-			<InputLocale>0411:{03B5835F-F03C-411B-9CE2-AA23E1171E36}{A76C93D9-5523-4E90-AAFA-4DB112F9AC76}</InputLocale>
-            <SystemLocale>ja-JP</SystemLocale>
-            <UILanguage>ja-JP</UILanguage>
-            <UILanguageFallback>ja-JP</UILanguageFallback>
-            <UserLocale>ja-JP</UserLocale>
-		</component>
-		<component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
-			<ImageInstall>
-				<OSImage>
-					<Compact>false</Compact>
-					<InstallTo>
-						<DiskID>0</DiskID>
-						<PartitionID>4</PartitionID>
-					</InstallTo>
-					<Installfrom>
-						<MetaData wcm:action="add">
-							<key>/IMAGE/INDEX</key>
-							<Value>3</Value>
-						</MetaData>
-					</Installfrom>
-				</OSImage>
-			</ImageInstall>
-			<UserData>
-				<ProductKey>
-					<Key>YTFBW-QNTDQ-PMP2C-QWMR8-F3KTY</Key>
-				</ProductKey>
-				<AcceptEula>true</AcceptEula>
-			</UserData>
-			<RunSynchronous>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>1</Order>
-					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassTPMCheck /t REG_DWORD /d 1 /f</Path>
-				</RunSynchronousCommand>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>2</Order>
-					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassSecureBootCheck /t REG_DWORD /d 1 /f</Path>
-				</RunSynchronousCommand>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>3</Order>
-					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassRAMCheck /t REG_DWORD /d 1 /f</Path>
-				</RunSynchronousCommand>
-				<!-- Use Classic Setup -->
-				<RunSynchronousCommand wcm:action="add">
-					<Description>Switch to Legacy Setup</Description>
-					<Order>4</Order>
-					<Path>cmd /c reg add "HKLM\SYSTEM\Setup" /v CmdLine /t REG_SZ /d "X:\sources\setup.exe" /f</Path>
-				</RunSynchronousCommand>
-			</RunSynchronous>
-		</component>
-	</settings>
+	<settings pass="windowsPE"></settings>
 	<settings pass="generalize"></settings>
 	<settings pass="specialize">
 		<component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
