@@ -141,10 +141,6 @@
 					<Order>1</Order>
 					<CommandLine>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoLogonCount /t REG_DWORD /d 0 /f</CommandLine>
 				</SynchronousCommand>
-				<SynchronousCommand wcm:action="add">
-        			<Order>2</Order>
-        			<CommandLine>cmd.exe /c sysprep /generalize /oobe /reboot /unattend:C:\windows\system32\sysprep\unattend.xml"</CommandLine>
-    			</SynchronousCommand>
 			</FirstLogonCommands>
 		</component>
 	</settings>
