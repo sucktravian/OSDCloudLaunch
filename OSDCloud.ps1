@@ -82,7 +82,6 @@ $OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeplo
 Write-Host  -ForegroundColor Cyan "Downloading unattend.xml from repository"
 # Raw url
 $unattendURL = "https://raw.githubusercontent.com/sucktravian/OSDCloudLaunch/main/unattend.xml"
-<#
 # Path to the Sysprep folder
 $unattendPath = "C:\Windows\System32\Sysprep\unattend.xml"
 
@@ -93,8 +92,6 @@ if (Test-Path "C:\Windows\System32\Sysprep") {
     Write-Host  -ForegroundColor Red "Sysprep folder not found. Please check if the path is correct."
     exit
 }
-#>
-$unattendPath = "C:\OSDCloud\unattend.xml"
 # Attempt to download the unattend.xml file
 try {
     Invoke-WebRequest -Uri $unattendURL -OutFile $unattendPath
