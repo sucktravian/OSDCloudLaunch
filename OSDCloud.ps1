@@ -17,7 +17,7 @@ Write-Output $Global:MyOSDCloud
 
 Write-Host  -ForegroundColor Cyan "Start OSDCloud custom parameters"
 Start-OSDCloud -OSName 'Windows 11 23H2 x64' -SkipAutopilot -Firmware -ZTI -OSEdition Pro -OSLanguage ja-jp -OSActivation Retail
-
+<#
 $OOBEDeployJson = @'
 {
     "AddNetFX3":  {
@@ -80,7 +80,7 @@ If (!(Test-Path "C:\ProgramData\OSDeploy")) {
 }
 $OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeploy.json" -Encoding ascii -Force
 
-
+#>
 Write-Host  -ForegroundColor Cyan "Downloading unattend.xml from repository"
 # Raw url
 $unattendURL = "https://raw.githubusercontent.com/sucktravian/OSDCloudLaunch/main/unattend.xml"
@@ -115,5 +115,4 @@ if (Test-Path $unattendPath) {
 #Restart from WinPE
 Write-Host  -ForegroundColor Cyan "Restarting in 20 seconds!"
 Start-Sleep -Seconds 20
-pause
 wpeutil reboot
