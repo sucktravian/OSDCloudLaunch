@@ -1,3 +1,4 @@
+chcp 65001
 Write-Host  -ForegroundColor Cyan "Starting Custom OSDCloud ..."
 Start-Sleep -Seconds 5
 pause
