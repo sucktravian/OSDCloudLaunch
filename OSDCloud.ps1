@@ -11,6 +11,7 @@ Import-Module OSD -Force
 #Start OSDCloudScriptPad
 Write-Host -ForegroundColor Green "Start OSDPad"
 Start-OSDPad -RepoOwner sucktravian -RepoName OSDCloudLaunch -RepoFolder ScriptPad -BrandingTitle 'Custom Deployment'
+pause
 
 
 <#
