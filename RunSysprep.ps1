@@ -1,4 +1,4 @@
-$unattendPath = "C:\OSD\temp\unattend.xml"
+$unattendPath = "C:\OSDCloud\Temp\unattend.xml"
 Write-Warning "Searching for unattend.xml"
     if (-not(Test-Path -Path $unattendPath )) {
         Write-Host "unattend.xml not found" -ForegroundColor Red -ErrorAction Stop  
