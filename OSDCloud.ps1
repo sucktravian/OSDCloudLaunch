@@ -1,4 +1,3 @@
-chcp 65001
 Write-Host  -ForegroundColor Cyan "Starting Custom OSDCloud ..."
 Start-Sleep -Seconds 5
 pause
@@ -86,13 +85,6 @@ $unattendURL = "https://raw.githubusercontent.com/sucktravian/OSDCloudLaunch/mai
 # Path to the Sysprep folder
 $unattendPath = "C:\Windows\System32\Sysprep\unattend.xml"
 
-# Check if the Sysprep folder exists
-if (Test-Path "C:\Windows\System32\Sysprep") {
-    Write-Host  -ForegroundColor Green "Sysprep folder found at X:\Windows\System32\Sysprep"
-} else {
-    Write-Host  -ForegroundColor Red "Sysprep folder not found. Please check if the path is correct."
-    exit
-}
 # Attempt to download the unattend.xml file
 try {
     Invoke-WebRequest -Uri $unattendURL -OutFile $unattendPath
