@@ -84,14 +84,37 @@ $OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeplo
 #  [PostOS] OOBE CMD Command Line
 #================================================
 Write-Host -ForegroundColor Green "Downloading and creating script for OOBE phase"
-Invoke-RestMethod https://raw.githubusercontent.com/AkosBakos/OSDCloud/main/Set-KeyboardLanguage.ps1 | Out-File -FilePath 'C:\Windows\Setup\scripts\keyboard.ps1' -Encoding ascii -Force
+
+Write-Host  -ForegroundColor Cyan "Downloading unattend.xml from repository"
+# Raw url
+$unattendURL = "https://raw.githubusercontent.com/sucktravian/OSDCloudLaunch/main/unattend.xml"
+# Path to the Sysprep folder
+$unattendPath = "C:\OSD\Temp\unattend.xml"
+
+# Attempt to download the unattend.xml file
+try {
+    Invoke-WebRequest -Uri $unattendURL -OutFile $unattendPath
+    Write-Host  -ForegroundColor Green "Unattend.xml downloaded successfully to $unattendPath"
+} catch {
+    Write-Host  -ForegroundColor Red "Failed to download unattend.xml from $unattendURL. Error: $_"
+    exit
+}
+
+# Verify if the file was copied to the Sysprep folder
+if (Test-Path $unattendPath) {
+    Write-Host  -ForegroundColor Green "Unattend.xml is present in the Sysprep folder."
+} else {
+    Write-Host  -ForegroundColor Red "Unattend.xml was not found in the Sysprep folder."
+}
+
+Invoke-RestMethod "https://raw.githubusercontent.com/sucktravian/OSDCloudLaunch/main/RunSysprep.ps1" | Out-File -FilePath 'C:\Windows\Setup\scripts\RunSysprep.ps1' -Encoding ascii -Force
 
 
 
 $OOBECMD = @'
 @echo off
 # Execute OOBE Tasks
-start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\keyboard.ps1
+start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\RunSysprep.ps1
 
 
 exit 
