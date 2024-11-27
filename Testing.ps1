@@ -98,7 +98,7 @@ Write-Host  -ForegroundColor Cyan "Downloading unattend.xml from repository"
 # Raw url
 $unattendURL = "https://raw.githubusercontent.com/sucktravian/OSDCloudLaunch/main/unattend.xml"
 # Path to the Sysprep folder
-$unattendPath = "C:\OSD\Temp\unattend.xml"
+$unattendPath = "C:\OSDCloud\Temp\unattend.xml"
 
 # Attempt to download the unattend.xml file
 try {
