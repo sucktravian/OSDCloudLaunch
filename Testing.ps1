@@ -72,6 +72,7 @@ $OOBECMD = @'
 @echo off
 # Execute OOBE Tasks
 start /wait powershell.exe -NoL -ExecutionPolicy Bypass -F C:\Windows\Setup\Scripts\RunSysprep.ps1
+Start-OSDPad -RepoOwner sucktravian -RepoName OSDCloudLaunch -BrandingTitle 'Custom Deployment'
 
 
 exit 
