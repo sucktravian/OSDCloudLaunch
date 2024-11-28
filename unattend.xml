@@ -4,6 +4,12 @@
 	<settings pass="windowsPE"></settings>
 	<settings pass="generalize"></settings>
 	<settings pass="specialize">
+	    <component name="Microsoft-Windows-International-Core-WinPE">
+            <InputLocale>0411:00000411</InputLocale>
+            <SystemLocale>ja-JP</SystemLocale>
+            <UILanguage>ja-JP</UILanguage>
+            <UserLocale>ja-JP</UserLocale>
+        </component>
 		<component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
 			<RunSynchronous>
 				<RunSynchronousCommand wcm:action="add">
@@ -108,7 +114,7 @@
 	<settings pass="auditUser"></settings>
 	<settings pass="oobeSystem">
 		<component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
-			<InputLocale>0411:{03B5835F-F03C-411B-9CE2-AA23E1171E36}{A76C93D9-5523-4E90-AAFA-4DB112F9AC76}</InputLocale>
+			<InputLocale>0411:00000411</InputLocale>
             <SystemLocale>ja-JP</SystemLocale>
             <UILanguage>ja-JP</UILanguage>
             <UILanguageFallback>ja-JP</UILanguageFallback>
@@ -141,6 +147,14 @@
 					<Order>1</Order>
 					<CommandLine>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoLogonCount /t REG_DWORD /d 0 /f</CommandLine>
 				</SynchronousCommand>
+				<SynchronousCommand>
+                    <Order>2</Order>
+                    <CommandLine>reg add "HKLM\SYSTEM\CurrentControlSet\Services\i8042prt\Parameters" /v "LayerDriver JPN" /t REG_SZ /d "kbd106.dll" /f</CommandLine>
+                </SynchronousCommand>
+                <SynchronousCommand>
+                    <Order>3</Order>
+                    <CommandLine>reg add "HKLM\SYSTEM\CurrentControlSet\Services\i8042prt\Parameters" /v "OverrideKeyboardType" /t REG_DWORD /d "7" /f</CommandLine>
+                </SynchronousCommand>
 			</FirstLogonCommands>
 		</component>
 	</settings>
