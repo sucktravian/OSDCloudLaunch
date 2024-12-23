@@ -14,71 +14,69 @@ Import-Module OSD -Force
 
 Start-OSDCloudGUIDEV
 
-$OOBEDeployJson = @'
-{
-    "AddNetFX3":  {
-                      "IsPresent":  true
-                  },
-    "Autopilot":  {
-                      "IsPresent":  false
-                  },
-    "RemoveAppx":  [
-                    "Microsoft.Microsoft3DViewer",
-                    "Microsoft.BingSearch",
-                    "Clipchamp.Clipchamp",
-                    "Microsoft.Windows.DevHome",
-                    "MicrosoftCorporationII.MicrosoftFamily",
-                    "Microsoft.MixedReality.Portal",
-                    "Microsoft.Office.OneNote",
-                    "Microsoft.OutlookForWindows",
-                    "MicrosoftTeams",
-                    "MSTeams",
-                    
-                    "MicrosoftCorporationII.QuickAssist",
-                    "Microsoft.SkypeApp",
-                    "Microsoft.BingWeather",
-                    "Microsoft.BingNews",
-                    "Microsoft.GamingApp",
-                    "Microsoft.GetHelp",
-                    "Microsoft.Getstarted",
-                    "Microsoft.Messaging",
-                    "Microsoft.MicrosoftOfficeHub",
-                    "Microsoft.MicrosoftSolitaireCollection",
-                    "Microsoft.People",
-                    "Microsoft.PowerAutomateDesktop",
-                    "Microsoft.StorePurchaseApp",
-                    "Microsoft.Todos",
-                    "Microsoft.Wallet",
-                    "Microsoft.XboxApp",
-                    "microsoft.windowscommunicationsapps",
-                    "Microsoft.WindowsFeedbackHub",
-                    "Microsoft.WindowsMaps",
-                    "Microsoft.WindowsSoundRecorder",
-                    "Microsoft.Xbox.TCUI",
-                    "Microsoft.XboxGameOverlay",
-                    "Microsoft.XboxGamingOverlay",
-                    "Microsoft.XboxIdentityProvider",
-                    "Microsoft.XboxSpeechToTextOverlay",
-                    "Microsoft.YourPhone",
-                    "Microsoft.ZuneMusic",
-                    "Microsoft.ZuneVideo"
-                   ],
-    "UpdateDrivers":  {
-                          "IsPresent":  true
-                      },
-    "UpdateWindows":  {
-                          "IsPresent":  true
-                      }
-}
-'@
-If (!(Test-Path "C:\ProgramData\OSDeploy")) {
-    New-Item "C:\ProgramData\OSDeploy" -ItemType Directory -Force | Out-Null
-}
-$OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeploy.json" -Encoding ascii -Force
+pause
+# Check if BitLocker is enabled on C: drive and disable it if necessary
+$mountPoint = "C:"
+$bitlockerStatus = Get-BitLockerVolume -MountPoint $mountPoint
 
-#=======================================================================
-#   Restart-Computer
-#=======================================================================
-Write-Host  -ForegroundColor Green "Restarting in 20 seconds!"
-Start-Sleep -Seconds 20
-wpeutil reboot
+# Check if BitLocker needs to be disabled
+if ($bitlockerStatus.ProtectionStatus -ne 'Off') {
+    Write-Host "BitLocker is enabled. Disabling BitLocker on $mountPoint..."
+    Disable-BitLocker -MountPoint $mountPoint
+
+    # Wait until the volume is fully decrypted
+    do {
+        Start-Sleep -Seconds 5  # Wait for 5 seconds before checking again
+        $bitlockerStatus = Get-BitLockerVolume -MountPoint $mountPoint
+        Write-Host "Current VolumeStatus: $($bitlockerStatus.VolumeStatus). Waiting for 'FullyDecrypted'..."
+    } while ($bitlockerStatus.VolumeStatus -ne 'FullyDecrypted')
+
+    Write-Host "BitLocker has been successfully disabled and the volume is fully decrypted on $mountPoint."
+} else {
+    # If already disabled, check the VolumeStatus
+    if ($bitlockerStatus.VolumeStatus -eq 'FullyDecrypted') {
+        Write-Host "BitLocker is already disabled, and the volume is fully decrypted on $mountPoint. Proceeding..."
+    } else {
+        Write-Host "BitLocker is disabled, but the volume is not fully decrypted. Please check the status manually."
+    }
+}
+
+# Get the current size of C: drive
+$disk = Get-Partition -DriveLetter C
+$size = $disk | Select-Object -ExpandProperty Size
+$currentSizeGB = [math]::round($size / 1GB, 2)
+
+Write-Host "Current size of C: drive is $currentSizeGB GB."
+
+# Check if there is enough free space on C: drive
+if ($currentSizeGB -le 100) {
+    Write-Host "The C: drive is already 100 GB or smaller. No shrink operation needed."
+}
+else {
+    # Shrink the C: drive to 100 GB
+    $newSizeBytes = 100GB
+    Write-Host "Shrinking the C: drive to 100 GB..."
+    
+    # Resize the partition to 100 GB (100 * 1024^3 bytes)
+    Resize-Partition -DriveLetter C -Size $newSizeBytes
+
+    Write-Host "C: drive has been successfully shrunk to 100 GB."
+}
+
+#$unattendPath = "C:\OSDCloud\Temp\unattend.xml"
+$unattendPath = "D:\unattend.xml"
+Write-Warning "Searching for unattend.xml"
+if (-not(Test-Path -Path $unattendPath )) {
+    Write-Host "unattend.xml not found" -ForegroundColor Red -ErrorAction Stop  
+}
+try {
+    $sysprep = "C:\Windows\System32\Sysprep\sysprep.exe"
+    $ar = "/generalize /reboot /oobe /unattend:$unattendPath"
+    Start-Process -FilePath $sysprep -ArgumentList $ar -Wait
+    Start-Sleep 2
+}
+catch {
+    Write-Host "sysprep failed to run"
+    $Error[0]
+}
+
