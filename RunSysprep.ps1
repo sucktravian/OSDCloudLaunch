@@ -1,5 +1,5 @@
-Import-Module OSD -Force
-Invoke-Expression (Invoke-RestMethod functions.osdcloud.com)
+#Import-Module OSD -Force
+#Invoke-Expression (Invoke-RestMethod functions.osdcloud.com)
 
 # Check if BitLocker is enabled on C: drive and disable it if necessary
 $mountPoint = "C:"
@@ -49,10 +49,6 @@ else {
     Write-Host "C: drive has been successfully shrunk to 100 GB."
 }
 
-# Update Drivers
-#UpdateDrivers
-#UpdateWindows
-
 #$unattendPath = "C:\OSDCloud\Temp\unattend.xml"
 $unattendPath = "D:\unattend.xml"
 Write-Warning "Searching for unattend.xml"
@@ -69,3 +65,9 @@ catch {
     Write-Host "sysprep failed to run"
     $Error[0]
 }
+
+
+# Update Drivers
+#UpdateDrivers
+#UpdateWindows
+
