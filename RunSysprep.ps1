@@ -1,17 +1,32 @@
 Import-Module OSD -Force
 Invoke-Expression (Invoke-RestMethod functions.osdcloud.com)
 
-
-# Check if BitLocker is enabled on C: drive and wait until it's disabled
+# Check if BitLocker is enabled on C: drive and disable it if necessary
 $mountPoint = "C:"
 $bitlockerStatus = Get-BitLockerVolume -MountPoint $mountPoint
-# Wait until BitLocker is disabled
-while ($bitlockerStatus.ProtectionStatus -ne 'Off') {
-    Write-Host "BitLocker is still enabled. Waiting..."
-    Start-Sleep -Seconds 5  # Wait for 5 seconds before checking again
-    $bitlockerStatus = Get-BitLockerVolume -MountPoint $mountPoint
+
+# Check if BitLocker needs to be disabled
+if ($bitlockerStatus.ProtectionStatus -ne 'Off') {
+    Write-Host "BitLocker is enabled. Disabling BitLocker on $mountPoint..."
+    Disable-BitLocker -MountPoint $mountPoint
+
+    # Wait until the volume is fully decrypted
+    do {
+        Start-Sleep -Seconds 5  # Wait for 5 seconds before checking again
+        $bitlockerStatus = Get-BitLockerVolume -MountPoint $mountPoint
+        Write-Host "Current VolumeStatus: $($bitlockerStatus.VolumeStatus). Waiting for 'FullyDecrypted'..."
+    } while ($bitlockerStatus.VolumeStatus -ne 'FullyDecrypted')
+
+    Write-Host "BitLocker has been successfully disabled and the volume is fully decrypted on $mountPoint."
+} else {
+    # If already disabled, check the VolumeStatus
+    if ($bitlockerStatus.VolumeStatus -eq 'FullyDecrypted') {
+        Write-Host "BitLocker is already disabled, and the volume is fully decrypted on $mountPoint. Proceeding..."
+    } else {
+        Write-Host "BitLocker is disabled, but the volume is not fully decrypted. Please check the status manually."
+    }
 }
-Write-Host "BitLocker is disabled. Proceeding..."
+
 # Get the current size of C: drive
 $disk = Get-Partition -DriveLetter C
 $size = $disk | Select-Object -ExpandProperty Size
@@ -35,10 +50,11 @@ else {
 }
 
 # Update Drivers
-UpdateDrivers
-UpdateWindows
+#UpdateDrivers
+#UpdateWindows
 
-$unattendPath = "C:\OSDCloud\Temp\unattend.xml"
+#$unattendPath = "C:\OSDCloud\Temp\unattend.xml"
+$unattendPath = "D:\unattend.xml"
 Write-Warning "Searching for unattend.xml"
 if (-not(Test-Path -Path $unattendPath )) {
     Write-Host "unattend.xml not found" -ForegroundColor Red -ErrorAction Stop  
