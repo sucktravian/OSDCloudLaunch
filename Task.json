@@ -1,0 +1,23 @@
+{
+    "Tasks": [
+      {
+        "Name": "CheckDrivers",
+        "Description": "Check drivers and install/update based on the manufacturer",
+        "Command": "Check-Drivers.ps1",
+        "Dependencies": []
+      },
+      {
+        "Name": "InstallWindowsUpdates",
+        "Description": "Install Windows updates using PSWindowsUpdate",
+        "Command": "Install-WindowsUpdates.ps1",
+        "Dependencies": ["CheckDrivers"]
+      },
+      {
+        "Name": "PrepareSysprep",
+        "Description": "Prepare and execute Sysprep",
+        "Command": "Prepare-Sysprep.ps1",
+        "Dependencies": ["InstallWindowsUpdates"]
+      }
+    ]
+  }
+  
