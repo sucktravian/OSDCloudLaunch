@@ -1,6 +1,7 @@
 Import-Module "C:\OSDCloud\Scripts\SettingModule\Setting.psm1"
 # Remove installed powershell modules 
-
+Uninstall-Module -Name OSD
+Uninstall-Module -Name PSWindowsUpdate
 # Delete Task
 Set-RbRsScript -settask $false
 # Open Device Manager
