@@ -35,7 +35,7 @@ function Invoke-GitHubContent {
                 New-Item -ItemType Directory -Path $dirPath | Out-Null
                 Write-Host -ForegroundColor Yellow "Created folder: $dirPath"
             }
-            Download-GitHubContent -url $item.url -localPath $dirPath
+            Invoke-GitHubContent -url $item.url -localPath $dirPath
         }
     }
 }
@@ -48,7 +48,7 @@ $branch = "main"
 $apiBaseURL = "https://api.github.com/repos/$repoOwner/$repoName/contents"
 
 # Local path to save the files
-$localBasePath = "C:\OSDCloudTEST\Scripts"
+$localBasePath = "C:\OSDCloud\Scripts"
 
 # Files to download directly
 $files = @(
