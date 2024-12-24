@@ -1,11 +1,11 @@
 # Import the Setting Module
-Import-Module "C:\IDM\SettingModule\Setting.psm1"
+Import-Module "C:\OSDCloud\Scripts\SettingModule\Setting.psm1"
 
 # Remove Task
 Set-RbRsScript -settask $false
 
 # Add Task for running script after sysprep
-Set-RbRsScript -settask $true -ScriptName "C:\IDM\SysPrepTools\Scripts\Checker.ps1"
+Set-RbRsScript -settask $true -ScriptName "C:\OSDCloud\Scripts\Checker.ps1"
 
 ################################################################################
 #                              SYSPREP                                         #
@@ -13,16 +13,13 @@ Set-RbRsScript -settask $true -ScriptName "C:\IDM\SysPrepTools\Scripts\Checker.p
 
 
 Write-Warning "Looking for unattend.xml"
-if (-not(Test-Path -Path $PSScriptRoot\SysPrepTools\Unattend.xml)) {
+if (-not(Test-Path -Path C:\OSDCloud\Scripts\Unattend.xml)) {
     Write-Host "unattend.xml cannot be found" -ForegroundColor Red -ErrorAction Stop  
 }
 
-Copy-Item -Path "$PSScriptRoot\SysPrepTools\Scripts" -Destination "C:\Windows\Setup" -Recurse -Force
-Start-Sleep -Seconds 3
-
 # Define sysprep executable and arguments
 $sysprep = "$env:WINDIR\System32\Sysprep\sysprep.exe"
-$ar = "/generalize /reboot /oobe /unattend:$PSScriptRoot\SysPrepTools\Unattend.xml"
+$ar = "/generalize /reboot /oobe /unattend:C:\OSDCloud\Scripts\Unattend.xml"
 
 do {
     try {

@@ -3,13 +3,13 @@ param(
 )
 
 Write-Host "Import module Setting"
-Import-Module "C:\IDM\SettingModule\Setting.psm1"
+Import-Module "C:\OSDCloud\Scripts\SettingModule\Setting.psm1"
 
 # Check connection
 Test-InternetConnection -Site google.com -Wait 2 -Mode Active
 
 # Set the current script to run after reboot
-Set-RbRsScript -settask $true -ScriptName "C:\IDM\main.ps1"
+Set-RbRsScript -settask $true -ScriptName "C:\OSDCloud\Scripts\main.ps1"
 
 # Ensure required modules are installed
 Install-PackageProvider -Name NuGet -Force
