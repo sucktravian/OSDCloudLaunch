@@ -9,7 +9,7 @@
       {
         "Name": "InstallWindowsUpdates",
         "Description": "Install Windows updates using PSWindowsUpdate",
-        "Command": "Install-WindowsUpdates.ps1",
+        "Command": "Install-Updates.ps1",
         "Dependencies": ["CheckDrivers"]
       },
       {
