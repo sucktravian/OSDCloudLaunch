@@ -48,8 +48,7 @@ else {
 
     Write-Host "C: drive has been successfully shrunk to 100 GB."
 }
-
-#$unattendPath = "C:\OSDCloud\Temp\unattend.xml"
+#TODO Fix USB mount point. It could change.
 $unattendPath = "D:\unattend.xml"
 Write-Warning "Searching for unattend.xml"
 if (-not(Test-Path -Path $unattendPath )) {
@@ -66,8 +65,4 @@ catch {
     $Error[0]
 }
 
-
-# Update Drivers
-#UpdateDrivers
-#UpdateWindows
 
