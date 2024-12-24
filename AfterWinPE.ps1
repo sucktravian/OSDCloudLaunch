@@ -1,5 +1,3 @@
-#Import-Module OSD -Force
-#Invoke-Expression (Invoke-RestMethod functions.osdcloud.com)
 
 # Check if BitLocker is enabled on C: drive and disable it if necessary
 $mountPoint = "C:"
