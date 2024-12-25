@@ -35,4 +35,3 @@ Suspend-PowerSaving
 # Run tasks from JSON
 Invoke-TasksFromJson -JsonPath $TaskFilePath
 
-Write-Host "All tasks have been completed!" -ForegroundColor Green

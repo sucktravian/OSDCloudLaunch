@@ -4,6 +4,10 @@ function Invoke-TasksFromJson {
     )
     $tasks = (Get-Content -Path $JsonPath | ConvertFrom-Json).Tasks
 
+    # Get the base path of the JSON file
+    $jsonBasePath = Split-Path -Parent $JsonPath
+    $scriptsBasePath = Join-Path -Path $jsonBasePath -ChildPath "SettingModule\Public\ps1"
+
     # Load the last completed task
     $lastCompletedTask = Get-TaskState
 
@@ -15,19 +19,28 @@ function Invoke-TasksFromJson {
             continue
         }
         Write-Host "Starting task: $($task.Name)" -ForegroundColor Green
-    
+
+        # Resolve the full path of the script
+        $scriptPath = Join-Path -Path $scriptsBasePath -ChildPath $task.Command
+
         # Execute the command
         try {
-            . $task.Command
+            if (Test-Path $scriptPath) {
+                Write-Host "Executing script: $scriptPath" -ForegroundColor Cyan
+                . $scriptPath
+            } else {
+                Write-Host "Script not found: $scriptPath" -ForegroundColor Red
+                throw "Script not found: $scriptPath"
+            }
         }
         catch {
             Write-Host "Task $($task.Name) failed: $_" -ForegroundColor Red
             throw $_
         }
-    
+
         # Save the task state after completion
         Save-TaskState -TaskName $task.Name
-    
+
         # Reboot if the task requires it
         if ($task.Name -eq "CheckDrivers" -or $task.Name -eq "InstallWindowsUpdates") {
             Write-Host "Reboot required after task: $($task.Name)" -ForegroundColor Yellow
