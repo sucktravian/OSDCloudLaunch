@@ -27,7 +27,20 @@ function Invoke-TasksFromJson {
         try {
             if (Test-Path $scriptPath) {
                 Write-Host "Executing script: $scriptPath" -ForegroundColor Cyan
-                . $scriptPath
+
+                # Check if Parameters exist
+                if ($task.Parameters) {
+                    # Build the parameter string dynamically
+                    $paramArgs = @()
+                    foreach ($key in $task.Parameters.Keys) {
+                        $paramArgs += "-$key"
+                        $paramArgs += $task.Parameters[$key]
+                    }
+                    # Execute the script with parameters
+                    & $scriptPath @paramArgs
+                } else {
+                    . $scriptPath
+                }
             } else {
                 Write-Host "Script not found: $scriptPath" -ForegroundColor Red
                 throw "Script not found: $scriptPath"

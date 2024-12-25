@@ -1,23 +1,27 @@
 {
-    "Tasks": [
-      {
-        "Name": "CheckDrivers",
-        "Description": "Check drivers and install/update based on the manufacturer",
-        "Command": "Update-DriverWithPSWindowsUpdate.ps1",
-        "Dependencies": []
-      },
-      {
-        "Name": "InstallWindowsUpdates",
-        "Description": "Install Windows updates using PSWindowsUpdate",
-        "Command": "Update-WindowsWithPSWindowsUpdate.ps1",
-        "Dependencies": ["CheckDrivers"]
-      },
-      {
-        "Name": "PrepareSysprep",
-        "Description": "Prepare and execute Sysprep",
-        "Command": "Prepare-Sysprep.ps1",
-        "Dependencies": ["InstallWindowsUpdates"]
+  "Tasks": [
+    {
+      "Name": "CheckDrivers",
+      "Description": "Check drivers and install/update based on the manufacturer",
+      "Command": "Update-DriverWithPSWindowsUpdate.ps1",
+      "Dependencies": []
+    },
+    {
+      "Name": "InstallWindowsUpdates",
+      "Description": "Install Windows updates using PSWindowsUpdate",
+      "Command": "Update-WindowsWithPSWindowsUpdate.ps1",
+      "Dependencies": ["CheckDrivers"]
+    },
+    {
+      "Name": "PrepareSysprep",
+      "Description": "Prepare and execute Sysprep",
+      "Command": "Invoke-SysprepWithUnattend.ps1",
+      "Dependencies": ["InstallWindowsUpdates"],
+      "Parameters": {
+        "UnattendPath": "D:\\CustomPath\\Unattend.xml",
+        "SysprepArgs": "/generalize /shutdown /oobe"
       }
-    ]
-  }
-  
+    }
+  ]
+}
+
