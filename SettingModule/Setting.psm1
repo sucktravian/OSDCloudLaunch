@@ -2,7 +2,7 @@
 $PrivateFunctions = @( Get-ChildItem -Path $PSScriptRoot\Private\ps1\*.ps1 -ErrorAction SilentlyContinue )
 
 # Path to store the task state
-$global:TaskStateFile = "C:\IDM\TaskState.json"
+$global:TaskStateFile = "C:\OSDCloud\Scripts\TaskState.json"
 
 foreach ($Import in @($PublicFunctions + $PrivateFunctions)) {
     Try {. $Import.FullName}

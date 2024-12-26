@@ -1,5 +1,5 @@
 param(
-    [string]$TaskFilePath = "C:\IDM\Task.json"
+    [string]$TaskFilePath = "C:\OSDCloud\Scripts\Task.json"
 )
 
 Write-Host "Import module Setting"
