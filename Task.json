@@ -12,13 +12,14 @@
       "Command": "Update-WindowsWithPSWindowsUpdate.ps1",
       "Dependencies": ["CheckDrivers"]
     },
+  
     {
       "Name": "PrepareSysprep",
       "Description": "Prepare and execute Sysprep",
       "Command": "Invoke-SysprepWithUnattend.ps1",
       "Dependencies": ["InstallWindowsUpdates"],
       "Parameters": {
-        "UnattendPath": "D:\\CustomPath\\Unattend.xml",
+        "UnattendPath": "C:\\OSDCloud\\Scripts\\unattend.xml",
         "SysprepArgs": "/generalize /shutdown /oobe"
       }
     }

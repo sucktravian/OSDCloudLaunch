@@ -53,9 +53,7 @@ $localBasePath = "C:\OSDCloud\Scripts"
 # Files to download directly
 $files = @(
     "unattend.xml",
-    "Check-Drivers.ps1",
     "Checker.ps1",
-    "Install-Update.ps1",
     "main.ps1",
     "Prepare-Sysprep.ps1",
     "runner.cmd",
