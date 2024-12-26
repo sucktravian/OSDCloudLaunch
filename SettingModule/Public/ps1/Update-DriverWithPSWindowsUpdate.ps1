@@ -20,3 +20,4 @@
         Write-Host "Drivers are already up to date."
     }
 }
+Update-DriverWithPSWindowsUpdate

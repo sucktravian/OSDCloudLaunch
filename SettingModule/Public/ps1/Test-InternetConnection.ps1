@@ -34,17 +34,17 @@
     if ($Mode -eq "Active") {
         #Start testing the connection and continue until the connection is good.
         While (!(Test-Connection -computer $site -count 1 -quiet)) {
-            Write-Host -ForegroundColor Red -NoNewline "LANケーブルを接続してください。..."
+            Write-Host -ForegroundColor Red -NoNewline "Testing internect connection...Connecting.."
             Start-Sleep -Seconds $wait
             Clear-Host
         }
         #Connection is good
-        Write-Host -ForegroundColor Green "$(Get-Date): ネットワークに接続完了しました。"
+        Write-Host -ForegroundColor Green "$(Get-Date): Testing internect connection...Connected"
     }
     elseif ($Mode -eq "Disable") {
         #Start testing the connection and continue until the connection is disabled.
         While (Test-Connection -computer $site -count 1 -quiet) {
-            Write-Host -ForegroundColor Red -NoNewline "LANケーブルを外してください..."
+            Write-Host -ForegroundColor Red -NoNewline "Disable internet connection to continue.."
             Start-Sleep -Seconds $wait
             Clear-Host
         }

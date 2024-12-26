@@ -13,20 +13,27 @@ function Invoke-SysprepWithUnattend {
     # Define sysprep executable and arguments
     $sysprep = "$env:WINDIR\System32\Sysprep\sysprep.exe"
     $fullArgs = "$SysprepArgs /unattend:$UnattendPath"
+    $retryCount = 0
+    $maxRetries = 3
 
     do {
         try {
-            Write-Host "Starting Sysprep..." -ForegroundColor Cyan
-            Start-Process -FilePath $sysprep -ArgumentList $fullArgs -Wait
-            Start-Sleep 2
-            Write-Host "Sysprep completed successfully!" -ForegroundColor Green
-            break
+            Write-Host "Starting Sysprep (attempt $($retryCount + 1))..." -ForegroundColor Cyan
+
+            # Start the process and capture the exit code
+            $process = Start-Process -FilePath $sysprep -ArgumentList $fullArgs -Wait -PassThru
+
+            # Check the exit code of Sysprep
+            if ($process.ExitCode -eq 0) {
+                Write-Host "Sysprep completed successfully!" -ForegroundColor Green
+                break
+            } else {
+                Write-Host "Sysprep failed with exit code $($process.ExitCode). Diagnosing the issue..." -ForegroundColor Red
+                throw "Sysprep failed"
+            }
         }
         catch {
-            Write-Host "Sysprep failed. Diagnosing the issue..." -ForegroundColor Red
-            $Error[0]
-
-            # Path to the sysprep error log
+            # Handle Sysprep failure
             $setuperrPath = "$env:SystemDrive\Windows\Panther\setuperr.log"
             if (Test-Path $setuperrPath) {
                 Write-Host "Checking setuperr.log for Appx package errors..." -ForegroundColor Yellow
@@ -80,7 +87,13 @@ function Invoke-SysprepWithUnattend {
                 Write-Error "setuperr.log not found. Cannot diagnose Sysprep failure."
             }
 
+            $retryCount++
+            if ($retryCount -ge $maxRetries) {
+                Write-Host "Exceeded maximum retries. Sysprep cannot continue." -ForegroundColor Red
+                break
+            }
             Write-Host "Retrying Sysprep..." -ForegroundColor Cyan
         }
-    } until ($false) # Continue until sysprep is successful
+    } while ($true)
 }
+Invoke-SysprepWithUnattend

@@ -26,3 +26,4 @@ function Update-WindowsWithPSWindowsUpdate {
         Write-Warning "PSWindowsUpdate module is not available. Ensure it is correctly installed."
     }
 }
+Update-WindowsWithPSWindowsUpdate
