@@ -2,13 +2,9 @@
     #Check if Data folder exist if not create
     $testPath = Test-Path -Path $PSScriptRoot\Data
     if (-not $testPath) { New-Item -ItemType Directory -Path $PSScriptRoot\Data }
-
     #.csv path (using $PSScriptRoot + "\Path\") 
-
     $filePath = $PSScriptRoot + "\Data\"
-
     #Csv name
-
     Write-Host "Drivers and Programs installed"
     Write-Host "Type device : "
     $choice = Read-Host "oem or base"
@@ -20,7 +16,6 @@
     Write-Host "Export complete "
     Write-Host "Do you want to compare the 2 .csv files? "
     $choice1 = Read-Host "yes or no"
-
     if ($choice1 -ne "yes") {
         Write-Host "Executing exit command"
         Exit
@@ -41,7 +36,6 @@
         $_
     }
     $cD | Export-Csv -Path $filePath"Drivers_Diff.csv" -Encoding UTF8 -NoTypeInformation
-
     $cP = Compare-Object  -ReferenceObject $PoemCsv -DifferenceObject $PbaseCsv -Property DisplayName, DisplayVersion | ForEach-Object {
         if ($_.SideIndicator -eq '=>') {
             $_.SideIndicator = "BASEonly"
