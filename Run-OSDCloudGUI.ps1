@@ -15,7 +15,7 @@ Import-Module OSD -Force
 Start-OSDCloudGUIDEV
 
 
-# Recursive download function
+<# Recursive download function
 function Invoke-GitHubContent {
     param (
         [string]$url,
@@ -82,4 +82,5 @@ Write-Host -ForegroundColor Cyan "Starting download process..."
 $rootURL = "$apiBaseURL/SettingModule?ref=$branch"
 Invoke-GitHubContent -url $rootURL -localPath "$localBasePath\SettingModule"
 Write-Host -ForegroundColor Cyan "Download process completed!"
+#>
 
