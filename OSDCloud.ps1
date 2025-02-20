@@ -1,18 +1,4 @@
-Write-Host -ForegroundColor Green "Starting OSDCloud ZTI"
-Start-Sleep -Seconds 5
 
-#Make sure I have the latest OSD Content
-Write-Host -ForegroundColor Green "Updating OSD PowerShell Module"
-Install-Module OSD -Force -SkipPublisherCheck
-
-Write-Host  -ForegroundColor Green "Importing OSD PowerShell Module"
-Import-Module OSD -Force
-
-#Start OSDCloudScriptPad
-Write-Host -ForegroundColor Green "Start OSDPad"
-Start-OSDPad -RepoOwner sucktravian -RepoName OSDCloudLaunch -BrandingTitle 'Custom Deployment'
-
-<#
 Write-Host  -ForegroundColor Cyan "Starting Custom OSDCloud ..."
 Start-Sleep -Seconds 5
 
@@ -30,6 +16,8 @@ Write-Output $Global:MyOSDCloud
 
 Write-Host  -ForegroundColor Cyan "Start OSDCloud custom parameters"
 Start-OSDCloud -OSName 'Windows 11 23H2 x64' -SkipAutopilot -Firmware -ZTI -OSEdition Pro -OSLanguage ja-jp -OSActivation Retail
+
+Write-Host -ForegroundColor Cyan "Create C:\ProgramData\OSDeploy\OSDeploy.OOBEDeploy.json"
 $OOBEDeployJson = @'
 {
     "AddNetFX3":  {
@@ -92,30 +80,4 @@ If (!(Test-Path "C:\ProgramData\OSDeploy")) {
 }
 $OOBEDeployJson | Out-File -FilePath "C:\ProgramData\OSDeploy\OSDeploy.OOBEDeploy.json" -Encoding ascii -Force
 
-Write-Host  -ForegroundColor Cyan "Downloading unattend.xml from repository"
-# Raw url
-$unattendURL = "https://raw.githubusercontent.com/sucktravian/OSDCloudLaunch/main/unattend.xml"
-# Path to the Sysprep folder
-$unattendPath = "C:\Windows\System32\Sysprep\unattend.xml"
 
-# Attempt to download the unattend.xml file
-try {
-    Invoke-WebRequest -Uri $unattendURL -OutFile $unattendPath
-    Write-Host  -ForegroundColor Green "Unattend.xml downloaded successfully to $unattendPath"
-} catch {
-    Write-Host  -ForegroundColor Red "Failed to download unattend.xml from $unattendURL. Error: $_"
-    exit
-}
-
-# Verify if the file was copied to the Sysprep folder
-if (Test-Path $unattendPath) {
-    Write-Host  -ForegroundColor Green "Unattend.xml is present in the Sysprep folder."
-} else {
-    Write-Host  -ForegroundColor Red "Unattend.xml was not found in the Sysprep folder."
-}
-
-#Restart from WinPE
-Write-Host  -ForegroundColor Cyan "Restarting in 20 seconds!"
-Start-Sleep -Seconds 20
-wpeutil reboot
-#>
