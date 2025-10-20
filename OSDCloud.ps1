@@ -15,5 +15,11 @@ $Global:MyOSDCloud = [ordered]@{
 Write-Output $Global:MyOSDCloud
 
 Write-Host  -ForegroundColor Cyan "Start OSDCloud custom parameters"
-Start-OSDCloud -OSName 'Windows 11 23H2 x64' -SkipAutopilot -Firmware -ZTI -OSEdition Pro -OSLanguage ja-jp -OSActivation Retail
+Start-OSDCloud -OSName 'Windows 11 24H2 x64' -SkipAutopilot -Firmware -ZTI -OSEdition Pro -OSLanguage ja-jp -OSActivation Retail
 
+#=======================================================================
+#   Restart-Computer
+#=======================================================================
+Write-Host  -ForegroundColor Green "Restarting!"
+Start-Sleep -Seconds 10
+wpeutil reboot
