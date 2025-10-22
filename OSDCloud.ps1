@@ -21,132 +21,135 @@ Start-OSDCloud -OSName 'Windows 11 24H2 x64' -SkipAutopilot -Firmware -ZTI -OSEd
 #=======================================================================
 #   Create Unattend.xml
 #=======================================================================
-$UnattendXml = @'
-<?xml version="1.0" encoding="utf-8"?>
-<unattend xmlns="urn:schemas-microsoft-com:unattend">
-  <settings pass="generalize">
-    <component name="Microsoft-Windows-PnpSysprep" processorArchitecture="amd64"
-      publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS"
-      xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <DoNotCleanUpNonPresentDevices>true</DoNotCleanUpNonPresentDevices>
-      <PersistAllDeviceInstalls>true</PersistAllDeviceInstalls>
-    </component>
-  </settings>
-
-  <settings pass="specialize">
-    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64"
-      publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS"
-      xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <RegisteredOrganization></RegisteredOrganization>
-      <RegisteredOwner></RegisteredOwner>
-      <CopyProfile>true</CopyProfile>
-      <TimeZone>Tokyo Standard Time</TimeZone>
-    </component>
-  </settings>
-
-  <settings pass="oobeSystem">
-    <!-- Japanese input and locale setup -->
-    <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64"
-      publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS"
-      xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <InputLocale>0411:00000411</InputLocale>
-      <KeyboardLayout>00000411</KeyboardLayout>
-      <SystemLocale>ja-JP</SystemLocale>
-      <UILanguage>ja-JP</UILanguage>
-      <UserLocale>ja-JP</UserLocale>
-    </component>
-
-    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64"
-      publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS"
-      xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-      <OOBE>
-        <HideEULAPage>true</HideEULAPage>
-        <ProtectYourPC>3</ProtectYourPC>
-        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
-        <SkipMachineOOBE>true</SkipMachineOOBE>
-        <SkipUserOOBE>true</SkipUserOOBE>
-      </OOBE>
-
-      <AutoLogon>
-        <Enabled>true</Enabled>
-        <LogonCount>1</LogonCount>
-        <Username>Administrator</Username>
-      </AutoLogon>
-
-      <UserAccounts>
-        <LocalAccounts>
-          <LocalAccount wcm:action="add">
-            <Name>Administrator</Name>
-            <Group>Administrators</Group>
-          </LocalAccount>
-        </LocalAccounts>
-      </UserAccounts>
-
-      <FirstLogonCommands>
-        <!-- Prevent BitLocker/Device Encryption -->
-        <SynchronousCommand wcm:action="add">
-          <Order>1</Order>
-          <RequiresUserInput>false</RequiresUserInput>
-          <CommandLine>reg add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v EnableBDE /t REG_DWORD /d 0 /f</CommandLine>
-          <Description>Disable BitLocker via Policy</Description>
-        </SynchronousCommand>
-        <SynchronousCommand wcm:action="add">
-          <Order>2</Order>
-          <RequiresUserInput>false</RequiresUserInput>
-          <CommandLine>reg add "HKLM\SYSTEM\CurrentControlSet\Control\BitLocker" /v PreventDeviceEncryption /t REG_DWORD /d 1 /f</CommandLine>
-          <Description>Prevent Device Encryption</Description>
-        </SynchronousCommand>
-
-        <!-- Extra safety: turn off BitLocker if somehow active -->
-        <SynchronousCommand wcm:action="add">
-          <Order>3</Order>
-          <RequiresUserInput>false</RequiresUserInput>
-          <CommandLine>cmd /c manage-bde -off C:</CommandLine>
-          <Description>Ensure BitLocker Disabled</Description>
-        </SynchronousCommand>
-
-        <!-- Resize partition -->
-        <SynchronousCommand wcm:action="add">
-          <Order>4</Order>
-          <RequiresUserInput>false</RequiresUserInput>
-          <CommandLine>powershell -Command "Resize-Partition -DriveLetter C -Size 100GB"</CommandLine>
-          <Description>Resize C partition</Description>
-        </SynchronousCommand>
-
-        <!-- Cleanup -->
-        <SynchronousCommand wcm:action="add">
-          <Order>5</Order>
-          <RequiresUserInput>false</RequiresUserInput>
-          <CommandLine>cmd /c del /Q /F c:\windows\system32\sysprep\Panther\setuperr.log</CommandLine>
-          <Description>Delete setuperr.log</Description>
-        </SynchronousCommand>
-        <SynchronousCommand wcm:action="add">
-          <Order>6</Order>
-          <RequiresUserInput>false</RequiresUserInput>
-          <CommandLine>cmd /c del /Q /F c:\windows\panther\unattend.xml</CommandLine>
-          <Description>Delete Unattend.xml</Description>
-        </SynchronousCommand>
-        <SynchronousCommand wcm:action="add">
-          <Order>7</Order>
-          <RequiresUserInput>false</RequiresUserInput>
-          <CommandLine>cmd /c del /Q /F c:\windows\system32\sysprep\Panther\unattend.xml</CommandLine>
-          <Description>Delete Unattend.xml duplicate</Description>
-        </SynchronousCommand>
-      </FirstLogonCommands>
-
-    </component>
-  </settings>
-
-  <cpi:offlineImage
-    cpi:source="wim:c:/users/cloning03/desktop/20230519%E5%BF%9C%E7%AD%94%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB/sources/install.wim#Windows 11 Pro"
-    xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+$UnattendXml = @'<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+	<settings pass="specialize">
+		<component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v BypassNRO /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>reg.exe delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\DevHomeUpdate" /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>cmd.exe /c "del "C:\Users\Default\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk""</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>4</Order>
+					<Path>cmd.exe /c "del "C:\Windows\System32\OneDriveSetup.exe""</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>5</Order>
+					<Path>cmd.exe /c "del "C:\Windows\SysWOW64\OneDriveSetup.exe""</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>6</Order>
+					<Path>reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>7</Order>
+					<Path>reg.exe delete "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Run" /v OneDriveSetup /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>8</Order>
+					<Path>reg.exe unload "HKU\DefaultUser"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>9</Order>
+					<Path>reg.exe delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\OutlookUpdate" /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>10</Order>
+					<Path>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Communications" /v ConfigureChatAutoInstall /t REG_DWORD /d 0 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>11</Order>
+					<Path>net.exe accounts /maxpwage:UNLIMITED</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>12</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v HiberbootEnabled /t REG_DWORD /d 0 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>13</Order>
+					<Path>reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Dsh" /v AllowNewsAndInterests /t REG_DWORD /d 0 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>14</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\BitLocker" /v "PreventDeviceEncryption" /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>15</Order>
+					<Path>reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v HideFirstRunExperience /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>16</Order>
+					<Path>reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>17</Order>
+					<Path>reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\RunOnce" /v "SearchboxTaskbarMode" /t REG_SZ /d "reg.exe add HKCU\Software\Microsoft\Windows\CurrentVersion\Search /v SearchboxTaskbarMode /t REG_DWORD /d 2 /f" /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>18</Order>
+					<Path>reg.exe unload "HKU\DefaultUser"</Path>
+				</RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<TimeZone>Tokyo Standard Time</TimeZone>
+		</component>
+	</settings>
+	<settings pass="oobeSystem">
+		<component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<InputLocale>ja-JP</InputLocale>
+            <SystemLocale>ja-JP</SystemLocale>
+            <UILanguage>ja-JP</UILanguage>
+            <UILanguageFallback>en-US</UILanguageFallback>
+            <UserLocale>ja-JP</UserLocale>
+		</component>
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<UserAccounts>
+				<AdministratorPassword>
+					<Value></Value>
+					<PlainText>true</PlainText>
+				</AdministratorPassword>
+			</UserAccounts>
+			<AutoLogon>
+				<Username>Administrator</Username>
+				<Enabled>true</Enabled>
+				<LogonCount>1</LogonCount>
+				<Password>
+					<Value></Value>
+					<PlainText>true</PlainText>
+				</Password>
+			</AutoLogon>
+			<OOBE>
+				<ProtectYourPC>3</ProtectYourPC>
+				<HideEULAPage>true</HideEULAPage>
+				<HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+				<HideOnlineAccountScreens>false</HideOnlineAccountScreens>
+			</OOBE>
+			<FirstLogonCommands>
+				<SynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<CommandLine>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoLogonCount /t REG_DWORD /d 0 /f</CommandLine>
+				</SynchronousCommand>
+				<SynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<RequiresUserInput>false</RequiresUserInput>
+					<CommandLine>cmd /c del /Q /F c:\windows\system32\sysprep\Panther\unattend.xml</CommandLine>
+					<Description>Delete Unattend.xml </Description>
+				</SynchronousCommand>
+			</FirstLogonCommands>
+		</component>
+	</settings>
 </unattend>
-'@
+'@ 
 
 if (-NOT (Test-Path 'C:\Windows\Panther')) {
     New-Item -Path 'C:\Windows\Panther' -ItemType Directory -Force -ErrorAction Stop | Out-Null
@@ -163,4 +166,5 @@ $UnattendXml | Out-File -FilePath $UnattendPath -Encoding utf8 -Width 2000 -Forc
 Write-Host  -ForegroundColor Green "Restarting!"
 Start-Sleep -Seconds 10
 wpeutil reboot
+
 
