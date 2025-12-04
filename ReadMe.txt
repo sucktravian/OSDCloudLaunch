@@ -8,5 +8,5 @@ Ctrl + Shift + F3 (if it doesnt work , press fn key)
 
 Run Sysprep from CMD:
 
-cd %windir%\system32\sysprep
+cd C:\Windows\System32\Sysprep
 sysprep /generalize /oobe /reboot /unattend:C:\Windows\System32\Sysprep\CustomUnattend.xml
